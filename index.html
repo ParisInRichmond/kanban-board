@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Paris × Mia — Command Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#0F172A;--col:#1E293B;--card:#334155;--gold:#F5A623;--gold2:#f7b84b;--gray:#94a3b8;--white:#f1f5f9}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;overflow-x:auto}
+
+/* HEADER */
+header{background:rgba(30,41,59,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(245,166,35,0.2);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-size:1.1rem;font-weight:800;color:var(--gold)}
+.logo span{color:var(--white);font-weight:400}
+.header-right{display:flex;gap:0.75rem;align-items:center}
+.search-box{background:var(--navy);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.4rem 0.85rem;color:var(--white);font-family:inherit;font-size:0.85rem;width:200px;transition:border-color 0.2s}
+.search-box:focus{outline:none;border-color:var(--gold)}
+.filter-sel{background:var(--navy);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:0.4rem 0.75rem;color:var(--white);font-family:inherit;font-size:0.85rem;cursor:pointer}
+.add-btn{background:var(--gold);color:var(--navy);border:none;border-radius:8px;padding:0.45rem 1rem;font-weight:700;font-size:0.85rem;cursor:pointer;transition:background 0.2s}
+.add-btn:hover{background:var(--gold2)}
+
+/* BOARD */
+.board{display:flex;gap:1rem;padding:1.25rem;min-height:calc(100vh - 60px);align-items:flex-start}
+.column{background:var(--col);border-radius:14px;width:280px;min-width:280px;padding:1rem;border-top:3px solid transparent;flex-shrink:0}
+.column[data-col="backlog"]{border-top-color:#64748b}
+.column[data-col="inprogress"]{border-top-color:#3b82f6}
+.column[data-col="review"]{border-top-color:#f59e0b}
+.column[data-col="done"]{border-top-color:#22c55e}
+.col-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.col-title{font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray)}
+.col-count{background:var(--navy);color:var(--gray);font-size:0.75rem;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px}
+.cards-list{min-height:60px;display:flex;flex-direction:column;gap:0.65rem}
+.cards-list.drag-over{background:rgba(245,166,35,0.05);border-radius:10px}
+
+/* CARD */
+.task-card{background:var(--card);border-radius:12px;padding:1rem;cursor:grab;border:1px solid rgba(255,255,255,0.05);transition:transform 0.15s,border-color 0.15s;position:relative}
+.task-card:hover{transform:translateY(-2px);border-color:rgba(245,166,35,0.3)}
+.task-card.dragging{opacity:0.5;cursor:grabbing}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.6rem}
+.card-title{font-size:0.9rem;font-weight:600;line-height:1.3;flex:1}
+.priority-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.p-high{background:#ef4444}
+.p-med{background:#f59e0b}
+.p-low{background:#22c55e}
+.card-desc{font-size:0.78rem;color:var(--gray);line-height:1.5;margin-bottom:0.7rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.4rem}
+.cat-badge{font-size:0.68rem;font-weight:700;padding:0.2rem 0.55rem;border-radius:20px}
+.cat-trading{background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25)}
+.cat-charity{background:rgba(245,166,35,0.12);color:var(--gold);border:1px solid rgba(245,166,35,0.25)}
+.cat-content{background:rgba(168,85,247,0.12);color:#c084fc;border:1px solid rgba(168,85,247,0.25)}
+.cat-facebook{background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.25)}
+.cat-hgp{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.25)}
+.cat-personal{background:rgba(148,163,184,0.12);color:var(--gray);border:1px solid rgba(148,163,184,0.25)}
+.card-actions{display:flex;gap:0.4rem;align-items:center}
+.mia-badge{font-size:0.7rem;background:rgba(245,166,35,0.1);color:var(--gold);border:1px solid rgba(245,166,35,0.25);padding:0.15rem 0.45rem;border-radius:20px}
+.card-date{font-size:0.68rem;color:#475569}
+.icon-btn{background:none;border:none;color:var(--gray);cursor:pointer;font-size:0.85rem;padding:0.15rem;border-radius:4px;transition:color 0.15s}
+.icon-btn:hover{color:#ef4444}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem}
+.overlay.show{display:flex}
+.modal{background:var(--col);border:1px solid rgba(245,166,35,0.2);border-radius:20px;padding:2rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:1.3rem;font-weight:800;margin-bottom:1.5rem;color:var(--gold)}
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:0.8rem;font-weight:600;color:var(--gray);margin-bottom:0.35rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--navy);border:1px solid rgba(245,166,35,0.15);border-radius:8px;padding:0.7rem 0.9rem;color:var(--white);font-family:inherit;font-size:0.9rem;transition:border-color 0.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold)}
+.form-group select option{background:var(--navy)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.modal-actions{display:flex;gap:0.75rem;margin-top:1.5rem;justify-content:flex-end}
+.btn-cancel{background:var(--navy);color:var(--gray);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0.6rem 1.25rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s}
+.btn-cancel:hover{background:rgba(255,255,255,0.05)}
+.btn-save{background:var(--gold);color:var(--navy);border:none;border-radius:8px;padding:0.6rem 1.5rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.2s}
+.btn-save:hover{background:var(--gold2)}
+.toggle-mia{display:flex;align-items:center;gap:0.5rem;cursor:pointer;user-select:none}
+.toggle-mia input{width:auto;accent-color:var(--gold)}
+.toggle-mia span{font-size:0.85rem;color:var(--gray)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Paris <span>×</span> Mia 🤖 <span style="font-size:0.75rem;color:var(--gray);font-weight:400;margin-left:0.5rem">Command Board</span></div>
+  <div class="header-right">
+    <input class="search-box" type="text" placeholder="🔍 Search tasks..." oninput="filterCards()" id="searchInput"/>
+    <select class="filter-sel" onchange="filterCards()" id="catFilter">
+      <option value="">All Categories</option>
+      <option value="Trading">📈 Trading</option>
+      <option value="Charity Driver">🧡 Charity Driver</option>
+      <option value="Content">🎮 Content/Stream</option>
+      <option value="Facebook">📘 Facebook Page</option>
+      <option value="HGP">🏫 HGP/Work</option>
+      <option value="Personal">⚡ Personal</option>
+    </select>
+    <button class="add-btn" onclick="openModal()">+ Add Task</button>
+  </div>
+</header>
+
+<div class="board">
+  <div class="column" data-col="backlog">
+    <div class="col-header"><span class="col-title">📋 Backlog</span><span class="col-count" id="count-backlog">0</span></div>
+    <div class="cards-list" id="backlog" ondragover="dragOver(event)" ondrop="drop(event,'backlog')" ondragleave="dragLeave(event)"></div>
+  </div>
+  <div class="column" data-col="inprogress">
+    <div class="col-header"><span class="col-title">⚡ In Progress</span><span class="col-count" id="count-inprogress">0</span></div>
+    <div class="cards-list" id="inprogress" ondragover="dragOver(event)" ondrop="drop(event,'inprogress')" ondragleave="dragLeave(event)"></div>
+  </div>
+  <div class="column" data-col="review">
+    <div class="col-header"><span class="col-title">👀 Review</span><span class="col-count" id="count-review">0</span></div>
+    <div class="cards-list" id="review" ondragover="dragOver(event)" ondrop="drop(event,'review')" ondragleave="dragLeave(event)"></div>
+  </div>
+  <div class="column" data-col="done">
+    <div class="col-header"><span class="col-title">✅ Done</span><span class="col-count" id="count-done">0</span></div>
+    <div class="cards-list" id="done" ondragover="dragOver(event)" ondrop="drop(event,'done')" ondragleave="dragLeave(event)"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeOnBg(event)">
+  <div class="modal">
+    <h2 id="modal-title">New Task</h2>
+    <div class="form-group"><label>Task Title *</label><input type="text" id="f-title" placeholder="What needs to get done?"/></div>
+    <div class="form-group"><label>Description</label><textarea id="f-desc" rows="3" placeholder="More detail..."></textarea></div>
+    <div class="row2">
+      <div class="form-group"><label>Category *</label>
+        <select id="f-cat">
+          <option value="Trading">📈 Trading</option>
+          <option value="Charity Driver">🧡 Charity Driver</option>
+          <option value="Content">🎮 Content/Stream</option>
+          <option value="Facebook">📘 Facebook Page</option>
+          <option value="HGP">🏫 HGP/Work</option>
+          <option value="Personal">⚡ Personal</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Priority *</label>
+        <select id="f-priority">
+          <option value="High">🔴 High</option>
+          <option value="Med">🟡 Medium</option>
+          <option value="Low">🟢 Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>Column</label>
+      <select id="f-col">
+        <option value="backlog">📋 Backlog</option>
+        <option value="inprogress">⚡ In Progress</option>
+        <option value="review">👀 Review</option>
+        <option value="done">✅ Done</option>
+      </select>
+    </div>
+    <label class="toggle-mia"><input type="checkbox" id="f-mia"/> <span>🤖 Assign to Mia</span></label>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveTask()">Save Task</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STARTER = [
+  {id:'t1',title:'Build Charity Driver MVP',desc:'Website with Oakland map, donor signup, delivery flow, AI insights.',cat:'Charity Driver',priority:'High',col:'backlog',mia:true,date:'Apr 7'},
+  {id:'t2',title:'Facebook viral page strategy',desc:'Research algorithm, content type, thumbnail style for cross-gen viral content.',cat:'Facebook',priority:'High',col:'backlog',mia:true,date:'Apr 7'},
+  {id:'t3',title:'Rebrand YouTube channel',desc:'New name, banner, content direction focused on horror game clips.',cat:'Content',priority:'Med',col:'backlog',mia:false,date:'Apr 7'},
+  {id:'t4',title:'TSLA options — daily discipline',desc:'Stick to: max 1 contract, $220 max, stop -40%, take profit +50-80%.',cat:'Trading',priority:'High',col:'inprogress',mia:true,date:'Apr 7'},
+  {id:'t5',title:'Build AI chatbot for HGP students',desc:'Spring build for AI track. Students present final at End of Summer Celebration Sept 11.',cat:'HGP',priority:'High',col:'inprogress',mia:true,date:'Apr 7'},
+  {id:'t6',title:'Charity Driver — grant research',desc:'Find Oakland/CA government grants for tech-enabled social services.',cat:'Charity Driver',priority:'Med',col:'backlog',mia:true,date:'Apr 7'},
+  {id:'t7',title:'Morning brief system setup',desc:'Daily 6am brief: TSLA levels, ES/NQ, top task for the day.',cat:'Personal',priority:'Med',col:'review',mia:true,date:'Apr 7'},
+  {id:'t8',title:'TikTok live consistency plan',desc:'Set a weekly live schedule. Horror game clips to drive real engagement.',cat:'Content',priority:'Med',col:'backlog',mia:false,date:'Apr 7'},
+];
+
+let tasks = JSON.parse(localStorage.getItem('cd_tasks') || 'null') || STARTER;
+let dragId = null;
+let editId = null;
+
+function save() { localStorage.setItem('cd_tasks', JSON.stringify(tasks)); }
+
+function catClass(cat) {
+  const m = {Trading:'cat-trading','Charity Driver':'cat-charity',Content:'cat-content',Facebook:'cat-facebook',HGP:'cat-hgp',Personal:'cat-personal'};
+  return m[cat] || 'cat-personal';
+}
+
+function renderAll() {
+  ['backlog','inprogress','review','done'].forEach(col => {
+    const el = document.getElementById(col);
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const catF = document.getElementById('catFilter').value;
+    const filtered = tasks.filter(t => t.col === col && (!search || t.title.toLowerCase().includes(search) || (t.desc||'').toLowerCase().includes(search)) && (!catF || t.cat === catF));
+    el.innerHTML = '';
+    filtered.forEach(t => el.appendChild(makeCard(t)));
+    document.getElementById('count-'+col).textContent = tasks.filter(t => t.col === col).length;
+  });
+}
+
+function makeCard(t) {
+  const div = document.createElement('div');
+  div.className = 'task-card';
+  div.draggable = true;
+  div.dataset.id = t.id;
+  div.addEventListener('dragstart', e => { dragId = t.id; div.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
+  div.addEventListener('dragend', () => div.classList.remove('dragging'));
+  div.innerHTML = `
+    <div class="card-top">
+      <div class="card-title">${t.title}</div>
+      <div class="priority-dot p-${t.priority.toLowerCase().replace('med','med')}"></div>
+    </div>
+    ${t.desc ? `<div class="card-desc">${t.desc}</div>` : ''}
+    <div class="card-meta">
+      <span class="cat-badge ${catClass(t.cat)}">${t.cat}</span>
+      <div class="card-actions">
+        ${t.mia ? '<span class="mia-badge">🤖 Mia</span>' : ''}
+        <span class="card-date">${t.date||''}</span>
+        <button class="icon-btn" title="Edit" onclick="openEdit('${t.id}')">✏️</button>
+        <button class="icon-btn" title="Delete" onclick="deleteTask('${t.id}')">🗑️</button>
+      </div>
+    </div>`;
+  return div;
+}
+
+function dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function drop(e, col) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!dragId) return;
+  const t = tasks.find(x => x.id === dragId);
+  if (t) { t.col = col; save(); renderAll(); }
+  dragId = null;
+}
+
+function openModal() { editId = null; document.getElementById('modal-title').textContent = 'New Task'; document.getElementById('f-title').value=''; document.getElementById('f-desc').value=''; document.getElementById('f-mia').checked=false; document.getElementById('overlay').classList.add('show'); }
+function openEdit(id) {
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  editId = id;
+  document.getElementById('modal-title').textContent = 'Edit Task';
+  document.getElementById('f-title').value = t.title;
+  document.getElementById('f-desc').value = t.desc||'';
+  document.getElementById('f-cat').value = t.cat;
+  document.getElementById('f-priority').value = t.priority;
+  document.getElementById('f-col').value = t.col;
+  document.getElementById('f-mia').checked = t.mia||false;
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModal() { document.getElementById('overlay').classList.remove('show'); editId=null; }
+function closeOnBg(e) { if(e.target===document.getElementById('overlay')) closeModal(); }
+
+function saveTask() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { alert('Task title required'); return; }
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  if (editId) {
+    const t = tasks.find(x => x.id === editId);
+    t.title = title; t.desc = document.getElementById('f-desc').value; t.cat = document.getElementById('f-cat').value; t.priority = document.getElementById('f-priority').value; t.col = document.getElementById('f-col').value; t.mia = document.getElementById('f-mia').checked;
+  } else {
+    tasks.push({ id: 't'+Date.now(), title, desc: document.getElementById('f-desc').value, cat: document.getElementById('f-cat').value, priority: document.getElementById('f-priority').value, col: document.getElementById('f-col').value, mia: document.getElementById('f-mia').checked, date: dateStr });
+  }
+  save(); renderAll(); closeModal();
+}
+
+function deleteTask(id) { if(!confirm('Delete this task?')) return; tasks = tasks.filter(x => x.id !== id); save(); renderAll(); }
+function filterCards() { renderAll(); }
+
+renderAll();
+</script>
+</body>
+</html>
