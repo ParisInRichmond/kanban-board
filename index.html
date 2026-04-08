@@ -161,14 +161,28 @@ header{background:rgba(30,41,59,0.95);backdrop-filter:blur(10px);border-bottom:1
 
 <script>
 const STARTER = [
-  {id:'t1',title:'Build Charity Driver MVP',desc:'Website with Oakland map, donor signup, delivery flow, AI insights.',cat:'Charity Driver',priority:'High',col:'backlog',mia:true,date:'Apr 7'},
-  {id:'t2',title:'Facebook viral page strategy',desc:'Research algorithm, content type, thumbnail style for cross-gen viral content.',cat:'Facebook',priority:'High',col:'backlog',mia:true,date:'Apr 7'},
-  {id:'t3',title:'Rebrand YouTube channel',desc:'New name, banner, content direction focused on horror game clips.',cat:'Content',priority:'Med',col:'backlog',mia:false,date:'Apr 7'},
-  {id:'t4',title:'TSLA options — daily discipline',desc:'Stick to: max 1 contract, $220 max, stop -40%, take profit +50-80%.',cat:'Trading',priority:'High',col:'inprogress',mia:true,date:'Apr 7'},
-  {id:'t5',title:'Build AI chatbot for HGP students',desc:'Spring build for AI track. Students present final at End of Summer Celebration Sept 11.',cat:'HGP',priority:'High',col:'inprogress',mia:true,date:'Apr 7'},
-  {id:'t6',title:'Charity Driver — grant research',desc:'Find Oakland/CA government grants for tech-enabled social services.',cat:'Charity Driver',priority:'Med',col:'backlog',mia:true,date:'Apr 7'},
-  {id:'t7',title:'Morning brief system setup',desc:'Daily 6am brief: TSLA levels, ES/NQ, top task for the day.',cat:'Personal',priority:'Med',col:'review',mia:true,date:'Apr 7'},
-  {id:'t8',title:'TikTok live consistency plan',desc:'Set a weekly live schedule. Horror game clips to drive real engagement.',cat:'Content',priority:'Med',col:'backlog',mia:false,date:'Apr 7'},
+  // CHARITY DRIVER
+  {id:'t1',title:'Charity Driver — live at parisirving.com',desc:'MVP built: map, auth, delivery logging, live feed, profiles, admin, Mia chatbot. Custom domain live.',cat:'Charity Driver',priority:'High',col:'done',mia:true,date:'Apr 7'},
+  {id:'t2',title:'Apply for Oakland small business grants',desc:'Apply at: usgrants.org/california/104533 and grants.ca.gov — use Paris Irving LLC. Target tech-enabled social services grants.',cat:'Charity Driver',priority:'High',col:'backlog',mia:true,date:'Apr 8'},
+  {id:'t3',title:'Apply for SBA 7(a) loan — Paris Irving LLC',desc:'Visit sba.gov/funding-programs/loans/7a-loans — best for startups. Need: EIN, LLC docs, business plan. Mia can help write the business plan.',cat:'Charity Driver',priority:'High',col:'backlog',mia:true,date:'Apr 8'},
+  {id:'t4',title:'Pitch Charity Driver to 2 Oakland nonprofits',desc:'Target: Downtown Streets Team, Lifelong Medical. Use HGP email + Google search presence as credibility. Mia will write the pitch deck.',cat:'Charity Driver',priority:'High',col:'backlog',mia:true,date:'Apr 8'},
+  {id:'t5',title:'Set up Stripe payments ($7/mo)',desc:'Wire Stripe into Supabase Edge Functions. Mia has the plan ready.',cat:'Charity Driver',priority:'High',col:'backlog',mia:true,date:'Apr 8'},
+  {id:'t6',title:'Collect real Oakland homeless data',desc:'Partner with 1-2 orgs to do 10-15 interviews. Build real database profiles. This is what makes Charity Driver fundable.',cat:'Charity Driver',priority:'Med',col:'backlog',mia:true,date:'Apr 8'},
+  // FACEBOOK PAGE
+  {id:'t7',title:'Launch Facebook viral page',desc:'Rebrand paris.krAZy page. Name ideas: Oakland Trending, Bay Viral, The Real Feed. Curate TikTok/IG clips → repost with watermark + strong captions. Target older FB users.',cat:'Facebook',priority:'High',col:'backlog',mia:true,date:'Apr 8'},
+  {id:'t8',title:'Build Facebook content calendar (Week 1)',desc:'Post 2-3 viral clips per day. Source from: iShowSpeed, Kai Cent, trending audio on TikTok. Add watermark + hook caption in first line.',cat:'Facebook',priority:'High',col:'backlog',mia:true,date:'Apr 8'},
+  // CONTENT / YOUTUBE / TIKTOK
+  {id:'t9',title:'YouTube rebrand — @parisislive',desc:'New name, new banner, new niche: funny authentic gaming + real life clips. Model after iShowSpeed but authentic Paris energy. Target: horror games + reaction content.',cat:'Content',priority:'Med',col:'backlog',mia:true,date:'Apr 8'},
+  {id:'t10',title:'Post 5 clips simultaneously across platforms',desc:'Same clip → TikTok + Instagram Reels + YouTube Shorts + Facebook. Use CapCut to edit. Post Tue/Wed/Fri for best reach. Mia will flag trending sounds weekly.',cat:'Content',priority:'High',col:'backlog',mia:true,date:'Apr 8'},
+  {id:'t11',title:'TikTok Shop — set up first product',desc:'Shop already set up. First step: find 3 trending products under $30 with high commission. Mia will research weekly trending TikTok shop products.',cat:'Content',priority:'Med',col:'backlog',mia:true,date:'Apr 8'},
+  // TRADING
+  {id:'t12',title:'TSLA — RULE: No trade without 6:15am premarket check',desc:'Account: $241. Max trade: $50. 1 contract only. Stop -40%. Take profit +50-80%. No exceptions. No premarket check = no trade.',cat:'Trading',priority:'High',col:'inprogress',mia:true,date:'Apr 8'},
+  {id:'t13',title:'Roth IRA — maximize contributions',desc:'Current: $12,654. Max annual contribution 2026: $7,000. Set up automatic monthly contribution of $583/mo to hit max. Research growth ETFs: VTI, SCHD, VOO.',cat:'Trading',priority:'High',col:'backlog',mia:true,date:'Apr 8'},
+  // HGP
+  {id:'t14',title:'Build AI chatbot for HGP students',desc:'Spring build for AI track. Students present final at End of Summer Celebration Sept 11, 2026.',cat:'HGP',priority:'High',col:'inprogress',mia:true,date:'Apr 8'},
+  {id:'t15',title:'Pitch speaking gig / consulting outside HGP',desc:'Your story + London experience + Charity Driver = fundable speaker. Target: STEM events, Oakland schools, tech conferences. Mia will write your speaker bio.',cat:'HGP',priority:'Med',col:'backlog',mia:true,date:'Apr 8'},
+  // PERSONAL
+  {id:'t16',title:'Morning brief — daily 6:15am routine',desc:'Every morning: check Mia for TSLA brief, market news, Elon/Trump updates, trending content, TikTok shop products. DO NOT skip.',cat:'Personal',priority:'High',col:'inprogress',mia:true,date:'Apr 8'},
 ];
 
 let tasks = JSON.parse(localStorage.getItem('cd_tasks') || 'null') || STARTER;
